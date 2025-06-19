@@ -13,7 +13,8 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x, 20.x]
-      steps:
+    
+    steps:
     - name: Checkout code
       uses: actions/checkout@v4
       
@@ -44,46 +45,19 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
     - name: Deploy to VPS
       uses: appleboy/ssh-action@v1.0.3
       with:
-        host: ${{ secrets.VPS_HOST }}
-        username: ${{ secrets.VPS_USERNAME }}
-        password: ${{ secrets.VPS_PASSWORD }}
-        port: ${{ secrets.VPS_PORT || 22 }}
+        host: 207.180.251.81
+        username: root
+        key: ${{ secrets.VPSKEY }}
+        port: 22
         script: |
-          echo "🚀 Starting deployment..."
-          
-          # Navigate to project directory
-          cd /var/www/hello-vps || { echo "❌ Project directory not found"; exit 1; }
-          
-          # Pull latest changes
-          echo "📥 Pulling latest code..."
+          echo "🚀 Starting Docker deployment..."
+          cd /var/www/hello-vps
           git pull origin main
-          
-          # Install dependencies
-          echo "📦 Installing dependencies..."
-          npm install
-          
-          # Build the application
-          echo "🔨 Building application..."
-          npm run build
-          
-          # Restart application with PM2
-          echo "🔄 Restarting application..."
-          pm2 restart hello-vps || pm2 start dist/main.js --name hello-vps
-          
-          # Health check
-          sleep 5
-          if pm2 list | grep -q "hello-vps.*online"; then
-            echo "✅ Deployment successful!"
-          else
-            echo "❌ Deployment failed!"
-            pm2 logs hello-vps --lines 20
-            exit 1
-          fi
-          
-          echo "🎉 Deployment completed successfully!"
+          docker compose down
+          docker compose up --build -d
+          sleep 30
+          curl -f http://localhost:3000 || exit 1
+          echo "✅ Deployment successful!"
