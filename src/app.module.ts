@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { RolesModule } from './roles/roles.module';
+import { UploadModule } from './upload/upload.module';
 import { User } from './users/user.entity';
 import { Role } from './roles/role.entity';
 
@@ -23,10 +24,10 @@ import { Role } from './roles/role.entity';
       database: process.env.DATABASE_NAME || (process.env.NODE_ENV === 'production' ? 'nestdb' : 'database.sqlite'),
       entities: [User, Role],      synchronize: true, // Bật synchronize để tạo bảng tự động
       logging: process.env.NODE_ENV !== 'production',
-    }),
-    AuthModule,
+    }),    AuthModule,
     UsersModule,
     RolesModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],

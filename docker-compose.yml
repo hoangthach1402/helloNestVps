@@ -27,10 +27,12 @@ services:
       - NODE_ENV=production
       - DATABASE_HOST=db
       - DATABASE_PORT=5432
-      - DATABASE_USER=nestuser
-      - DATABASE_PASSWORD=nestpass
+      - DATABASE_USER=nestuser      - DATABASE_PASSWORD=nestpass
       - DATABASE_NAME=nestdb
       - JWT_SECRET=your-super-secret-jwt-key-change-in-production
+      - CLOUDINARY_CLOUD_NAME=cugia94
+      - CLOUDINARY_API_KEY=725368927496298
+      - CLOUDINARY_API_SECRET=wIwx-h_7EUYpVfTauBWw_p8YiiQ
     ports:
       - "3000:3000"
     depends_on:
