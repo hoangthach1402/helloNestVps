@@ -10,7 +10,6 @@ export class AuthService {
     private usersService: UsersService,
     private jwtService: JwtService,
   ) {}
-
   async register(registerDto: RegisterDto): Promise<{ access_token: string; user: any }> {
     const user = await this.usersService.create(registerDto);
     
@@ -20,14 +19,14 @@ export class AuthService {
       role: user.role?.name || 'user' 
     };
     
-    const { password, ...userWithoutPassword } = user;
+    // Remove password from response
+    const { password: _password, ...userWithoutPassword } = user;
     
     return {
       access_token: this.jwtService.sign(payload),
       user: userWithoutPassword,
     };
   }
-
   async login(loginDto: LoginDto): Promise<{ access_token: string; user: any }> {
     const user = await this.validateUser(loginDto.username, loginDto.password);
     
@@ -41,7 +40,8 @@ export class AuthService {
       role: user.role?.name || 'user' 
     };
 
-    const { password, ...userWithoutPassword } = user;
+    // Remove password from response
+    const { password: _password, ...userWithoutPassword } = user;
 
     return {
       access_token: this.jwtService.sign(payload),

@@ -34,9 +34,9 @@ async function bootstrap() {
   // Initialize default roles
   const rolesService = app.get(RolesService);
   await rolesService.initializeDefaultRoles();
-  
-  await app.listen(process.env.PORT ?? 3000);
+    await app.listen(process.env.PORT ?? 3000);
   console.log('🚀 Application is running on: http://localhost:3000');
   console.log('📚 Swagger documentation: http://localhost:3000/api');
 }
-bootstrap();
+
+void bootstrap();

@@ -27,14 +27,17 @@ export class AuthController {
   async login(@Body(ValidationPipe) loginDto: LoginDto) {
     return await this.authService.login(loginDto);
   }
-
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Get user profile' })
   @ApiResponse({ status: 200, description: 'Profile retrieved successfully' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async getProfile(@Request() req) {
-    return await this.authService.getProfile(req.user.userId);
+  async getProfile(@Request() req: any) {
+    const userId = Number(req.user?.userId);
+    if (!userId) {
+      throw new Error('User ID not found');
+    }
+    return await this.authService.getProfile(userId);
   }
 }

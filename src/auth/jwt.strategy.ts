@@ -12,12 +12,17 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       secretOrKey: process.env.JWT_SECRET || 'your-secret-key',
     });
   }
-
   async validate(payload: any) {
-    const user = await this.authService.getProfile(payload.sub);
+    const userId = Number(payload.sub);
+    const user = await this.authService.getProfile(userId);
     if (!user) {
       throw new UnauthorizedException();
     }
-    return { userId: payload.sub, username: payload.username, role: payload.role };
+    
+    const userId_validated = Number(payload.sub);
+    const username = String(payload.username);
+    const role = String(payload.role);
+    
+    return { userId: userId_validated, username, role };
   }
 }
