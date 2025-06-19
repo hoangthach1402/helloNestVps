@@ -10,17 +10,14 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
     - name: Deploy to VPS
       uses: appleboy/ssh-action@v1.0.3
       with:
-        host: ${{ secrets.VPS_HOST }}
-        username: ${{ secrets.VPS_USERNAME }}
-        password: ${{ secrets.VPS_PASSWORD }}
-        port: ${{ secrets.VPS_PORT || 22 }}        script: |
-          echo "🚀 Starting Docker deployment..."
+        host: 207.180.251.81
+        username: root
+        key: ${{ secrets.VPSKEY }}
+        port: 22        script: |
+          echo "🚀 Starting Docker deployment with SSH key..."
           
           # Navigate to project directory
           cd /var/www/hello-vps || { echo "❌ Project directory not found"; exit 1; }
@@ -39,18 +36,17 @@ jobs:
           
           # Wait for containers to be ready
           echo "⏳ Waiting for containers to be ready..."
-          sleep 20
+          sleep 30
           
           # Health check
           echo "🔍 Performing health check..."
           if docker compose ps | grep -q "healthy\|Up"; then
-            echo "✅ Deployment successful!"
-            echo "📊 Container status:"
-            docker compose ps
+            echo "✅ Containers are running!"
             
             # Test endpoint
             if curl -f -s http://localhost:3000 > /dev/null; then
               echo "✅ Application endpoint is responding!"
+              echo "🌐 App is live at: http://207.180.251.81:3000"
             else
               echo "❌ Application endpoint not responding!"
               docker compose logs app
@@ -63,4 +59,4 @@ jobs:
             exit 1
           fi
           
-          echo "🎉 Docker deployment completed successfully!"
+          echo "🎉 SSH Key Docker deployment completed successfully!"
