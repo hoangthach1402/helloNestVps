@@ -11,12 +11,20 @@ export class CloudinaryService {
       api_secret: this.configService.get<string>('CLOUDINARY_API_SECRET'),
     });
   }
-
   async uploadImage(
     file: Express.Multer.File,
     folder: string = 'hello-vps',
   ): Promise<any> {
     return new Promise((resolve, reject) => {
+      console.log('🔧 Cloudinary config check:', {
+        cloud_name: this.configService.get<string>('CLOUDINARY_CLOUD_NAME'),
+        api_key: this.configService.get<string>('CLOUDINARY_API_KEY'),
+        api_secret_length: this.configService.get<string>('CLOUDINARY_API_SECRET')?.length || 0,
+        file_size: file.size,
+        file_mimetype: file.mimetype,
+        file_originalname: file.originalname,
+      });
+
       cloudinary.uploader.upload_stream(
         {
           resource_type: 'image',
@@ -26,12 +34,21 @@ export class CloudinaryService {
             { quality: 'auto' },
             { fetch_format: 'auto' },
           ],
-        },
-        (error, result) => {
+        },        (error, result) => {
           if (error) {
-            reject(error);
-          } else {
+            console.error('❌ Cloudinary upload error:', error);
+            reject(new Error(`Cloudinary error: ${error.message || 'Unknown error'}`));
+          } else if (result) {
+            console.log('✅ Cloudinary upload success:', {
+              public_id: result.public_id,
+              secure_url: result.secure_url,
+              width: result.width,
+              height: result.height,
+            });
             resolve(result);
+          } else {
+            console.error('❌ Cloudinary upload failed: No result returned');
+            reject(new Error('Cloudinary upload failed: No result returned'));
           }
         },
       ).end(file.buffer);

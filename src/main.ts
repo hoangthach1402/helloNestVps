@@ -7,13 +7,23 @@ import { RolesService } from './roles/roles.service';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   
+  // Configure body parser for file uploads
+  app.use('/upload', (req, res, next) => {
+    console.log('📥 Upload request received:', {
+      method: req.method,
+      url: req.url,
+      contentType: req.headers['content-type'],
+      contentLength: req.headers['content-length'],
+    });
+    next();
+  });
+  
   // Enable validation globally
   app.useGlobalPipes(new ValidationPipe());
-  
-  // Swagger configuration
+    // Swagger configuration
   const config = new DocumentBuilder()
     .setTitle('Hello VPS API')
-    .setDescription('API documentation for authentication and user management')
+    .setDescription('API documentation for authentication, user management, and file upload services')
     .setVersion('1.0')
     .addBearerAuth(
       {
