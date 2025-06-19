@@ -13,7 +13,7 @@ import { JwtStrategy } from './jwt.strategy';
     RolesModule,
     PassportModule,
     JwtModule.register({
-      secret: 'your-secret-key', // Nên đưa vào environment variable
+      secret: process.env.JWT_SECRET || 'your-secret-key',
       signOptions: { expiresIn: '24h' },
     }),
   ],

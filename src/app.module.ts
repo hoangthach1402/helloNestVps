@@ -15,10 +15,14 @@ import { Role } from './roles/role.entity';
       isGlobal: true,
     }),
     TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: 'database.sqlite',
-      entities: [User, Role],
-      synchronize: true, // Chỉ dùng trong development
+      type: process.env.NODE_ENV === 'production' ? 'postgres' : 'sqlite',
+      host: process.env.DATABASE_HOST || 'localhost',
+      port: parseInt(process.env.DATABASE_PORT || '5432'),
+      username: process.env.DATABASE_USER || 'nestuser',
+      password: process.env.DATABASE_PASSWORD || 'nestpass',
+      database: process.env.DATABASE_NAME || (process.env.NODE_ENV === 'production' ? 'nestdb' : 'database.sqlite'),
+      entities: [User, Role],      synchronize: true, // Bật synchronize để tạo bảng tự động
+      logging: process.env.NODE_ENV !== 'production',
     }),
     AuthModule,
     UsersModule,
