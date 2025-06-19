@@ -20,7 +20,7 @@ jobs:
         username: ${{ secrets.VPS_USERNAME }}
         password: ${{ secrets.VPS_PASSWORD }}
         port: ${{ secrets.VPS_PORT || 22 }}        script: |
-          echo "🚀 Starting deployment..."
+          echo "🚀 Starting Docker deployment..."
           
           # Navigate to project directory
           cd /var/www/hello-vps || { echo "❌ Project directory not found"; exit 1; }
@@ -29,11 +29,38 @@ jobs:
           echo "📥 Pulling latest code..."
           git pull origin main
           
-          # Make scripts executable
-          chmod +x scripts/*.sh
+          # Stop existing containers
+          echo "🛑 Stopping existing containers..."
+          docker compose down || true
           
-          # Run deployment script
-          ./scripts/deploy.sh
+          # Build and start containers
+          echo "🔨 Building and starting containers..."
+          docker compose up --build -d
           
-          # Run health check
-          ./scripts/health-check.sh
+          # Wait for containers to be ready
+          echo "⏳ Waiting for containers to be ready..."
+          sleep 20
+          
+          # Health check
+          echo "🔍 Performing health check..."
+          if docker compose ps | grep -q "healthy\|Up"; then
+            echo "✅ Deployment successful!"
+            echo "📊 Container status:"
+            docker compose ps
+            
+            # Test endpoint
+            if curl -f -s http://localhost:3000 > /dev/null; then
+              echo "✅ Application endpoint is responding!"
+            else
+              echo "❌ Application endpoint not responding!"
+              docker compose logs app
+              exit 1
+            fi
+          else
+            echo "❌ Deployment failed!"
+            docker compose ps
+            docker compose logs
+            exit 1
+          fi
+          
+          echo "🎉 Docker deployment completed successfully!"
