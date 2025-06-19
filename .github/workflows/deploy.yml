@@ -1,0 +1,39 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: # Cho phép chạy manual
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Deploy to VPS
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USERNAME }}
+        password: ${{ secrets.VPS_PASSWORD }}
+        port: ${{ secrets.VPS_PORT || 22 }}        script: |
+          echo "🚀 Starting deployment..."
+          
+          # Navigate to project directory
+          cd /var/www/hello-vps || { echo "❌ Project directory not found"; exit 1; }
+          
+          # Pull latest changes
+          echo "📥 Pulling latest code..."
+          git pull origin main
+          
+          # Make scripts executable
+          chmod +x scripts/*.sh
+          
+          # Run deployment script
+          ./scripts/deploy.sh
+          
+          # Run health check
+          ./scripts/health-check.sh
