@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { RolesModule } from './roles/roles.module';
 import { UploadModule } from './upload/upload.module';
+import { GeminiModule } from './gemini/gemini.module';
 import { User } from './users/user.entity';
 import { Role } from './roles/role.entity';
 
@@ -28,6 +29,7 @@ import { Role } from './roles/role.entity';
     UsersModule,
     RolesModule,
     UploadModule,
+    GeminiModule,
   ],
   controllers: [AppController],
   providers: [AppService],

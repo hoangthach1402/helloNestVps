@@ -34,6 +34,7 @@ services:
       - CLOUDINARY_CLOUD_NAME=cugia94
       - CLOUDINARY_API_KEY=725368927496298
       - CLOUDINARY_API_SECRET=wIwx-h_7EUYpVfTauBWw_p8YiiQ
+      - GEMINI_API_KEY=AIzaSyAKrNgmZqifpUiaDdBTNTMZY1khuXIBhh8
     ports:
       - "3000:3000"
     depends_on:
