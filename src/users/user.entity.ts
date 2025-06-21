@@ -19,11 +19,10 @@ export class User {
   firstName: string;
 
   @Column({ nullable: true })
-  lastName: string;
-  @Column({ default: true })
+  lastName: string;  @Column({ default: true })
   isActive: boolean;
 
-  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
   @ManyToOne(() => Role, role => role.users)
