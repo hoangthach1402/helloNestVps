@@ -89,14 +89,7 @@ export class MultipleUploadResponseDto {
 
 export class UploadErrorDto {
   @ApiProperty({ 
-    example: 400,
-    description: 'HTTP status code'
-  })
-  @IsNumber()
-  statusCode: number;
-
-  @ApiProperty({ 
-    example: 'Invalid file type. Only JPEG, PNG, GIF, and WebP are allowed.',
+    example: 'Upload failed: Invalid file type',
     description: 'Error message'
   })
   @IsString()
@@ -108,4 +101,43 @@ export class UploadErrorDto {
   })
   @IsString()
   error: string;
+
+  @ApiProperty({ 
+    example: 400,
+    description: 'HTTP status code'
+  })
+  @IsNumber()
+  statusCode: number;
+}
+
+export class DeleteImageDto {
+  @ApiProperty({ 
+    example: 'hello-vps/zb5fmnx1rodcgqjsqqoi',
+    description: 'Cloudinary public ID of the image to delete'
+  })
+  @IsString()
+  publicId: string;
+}
+
+export class DeleteImageResponseDto {
+  @ApiProperty({ 
+    example: 'Image deleted successfully',
+    description: 'Success message'
+  })
+  @IsString()
+  message: string;
+
+  @ApiProperty({ 
+    example: 'hello-vps/zb5fmnx1rodcgqjsqqoi',
+    description: 'Public ID of deleted image'
+  })
+  @IsString()
+  publicId: string;
+
+  @ApiProperty({ 
+    example: 'ok',
+    description: 'Cloudinary deletion result'
+  })
+  @IsString()
+  result: string;
 }

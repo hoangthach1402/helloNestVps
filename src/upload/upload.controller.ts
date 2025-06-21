@@ -1,6 +1,8 @@
 import {
   Controller,
   Post,
+  Delete,
+  Body,
   UploadedFile,
   UploadedFiles,
   UseInterceptors,
@@ -21,7 +23,9 @@ import {
   MultipleFileUploadDto, 
   UploadResponseDto, 
   MultipleUploadResponseDto, 
-  UploadErrorDto 
+  UploadErrorDto,
+  DeleteImageDto,
+  DeleteImageResponseDto
 } from './dto/upload.dto';
 
 @ApiTags('Upload')
@@ -30,7 +34,9 @@ export class UploadController {
   constructor(
     private readonly cloudinaryService: CloudinaryService,
     private readonly fileValidationService: FileValidationService,
-  ) {}@Post('image')
+  ) {}
+
+  @Post('image')
   @ApiOperation({ 
     summary: 'Upload single image',
     description: 'Upload a single image file to Cloudinary. Supports JPEG, PNG, GIF, WebP formats. Max file size: 5MB.'
@@ -104,6 +110,45 @@ export class UploadController {
       };
     } catch (error) {
       throw new BadRequestException(`Upload failed: ${error.message}`);
+    }
+  }
+
+  @Delete('image')
+  @ApiOperation({ 
+    summary: 'Delete image from Cloudinary',
+    description: 'Delete an image from Cloudinary using its public ID'
+  })
+  @ApiBody({
+    description: 'Image public ID to delete',
+    type: DeleteImageDto,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Image deleted successfully',
+    type: DeleteImageResponseDto
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad request - Invalid public ID or deletion failed',
+    type: UploadErrorDto
+  })
+  async deleteImage(@Body() deleteImageDto: DeleteImageDto): Promise<DeleteImageResponseDto> {
+    try {
+      const result = await this.cloudinaryService.deleteImage(deleteImageDto.publicId);
+      
+      if (result.result === 'ok') {
+        return {
+          message: 'Image deleted successfully',
+          publicId: deleteImageDto.publicId,
+          result: result.result,
+        };
+      } else {
+        throw new BadRequestException(`Failed to delete image: ${result.result || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('🚨 Delete controller error:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      throw new BadRequestException(`Delete failed: ${errorMessage}`);
     }
   }
 }
