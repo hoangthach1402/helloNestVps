@@ -4,14 +4,16 @@
   "description": "",
   "author": "",
   "private": true,
-  "license": "UNLICENSED",
-  "scripts": {
+  "license": "UNLICENSED",  "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
+    "start:local": "cross-env NODE_ENV=local nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
+    "docker:local": "docker-compose -f docker-compose.local.yml up -d",
+    "docker:local:down": "docker-compose -f docker-compose.local.yml down",
     "lint": "echo 'Linting disabled for faster development'",
     "test": "echo 'Tests disabled for faster deployment'",
     "test:watch": "echo 'Tests disabled'",
