@@ -8,8 +8,12 @@ import { UsersModule } from './users/users.module';
 import { RolesModule } from './roles/roles.module';
 import { UploadModule } from './upload/upload.module';
 import { GeminiModule } from './gemini/gemini.module';
+import { ChatModule } from './chat/chat.module';
+import { VocabularyModule } from './vocabulary/vocabulary.module';
 import { User } from './users/user.entity';
 import { Role } from './roles/role.entity';
+import { Chat } from './chat/entities/chat.entity';
+import { Vocabulary } from './vocabulary/entities/vocabulary.entity';
 
 @Module({
   imports: [
@@ -22,14 +26,16 @@ import { Role } from './roles/role.entity';
       username: process.env.DATABASE_USER || 'nestuser',
       password: process.env.DATABASE_PASSWORD || 'nestpass',
       database: process.env.DATABASE_NAME || 'nestdb',
-      entities: [User, Role],
+      entities: [User, Role, Chat, Vocabulary],
       synchronize: true, // Bật synchronize để tạo bảng tự động
       logging: process.env.NODE_ENV !== 'production',
-    }),AuthModule,
+    }),    AuthModule,
     UsersModule,
     RolesModule,
     UploadModule,
     GeminiModule,
+    ChatModule,
+    VocabularyModule,
   ],
   controllers: [AppController],
   providers: [AppService],

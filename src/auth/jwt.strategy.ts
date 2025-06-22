@@ -11,18 +11,21 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       ignoreExpiration: false,
       secretOrKey: process.env.JWT_SECRET || 'your-secret-key',
     });
-  }
-  async validate(payload: any) {
+  }  async validate(payload: any) {
+    console.log('🔍 JWT payload received:', payload);
     const userId = Number(payload.sub);
     const user = await this.authService.getProfile(userId);
     if (!user) {
       throw new UnauthorizedException();
     }
     
-    const userId_validated = Number(payload.sub);
-    const username = String(payload.username);
-    const role = String(payload.role);
-    
-    return { userId: userId_validated, username, role };
+    const userInfo = { 
+      sub: Number(payload.sub), // Giữ sub như trong token gốc
+      userId: Number(payload.sub), 
+      username: String(payload.username), 
+      role: String(payload.role) 
+    };
+    console.log('✅ User validated:', userInfo);
+    return userInfo;
   }
 }

@@ -5,7 +5,11 @@ WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
-RUN npm ci && npm cache clean --force
+RUN npm config set registry https://registry.npmjs.org/ && \
+    npm config set fetch-retry-mintimeout 20000 && \
+    npm config set fetch-retry-maxtimeout 120000 && \
+    npm config set fetch-retries 3 && \
+    npm ci && npm cache clean --force
 
 # Copy source code
 COPY . .
@@ -24,8 +28,12 @@ RUN apk add --no-cache curl
 # Copy package files
 COPY package*.json ./
 
-# Install only production dependencies
-RUN npm ci --only=production && npm cache clean --force
+# Install only production dependencies with retry
+RUN npm config set registry https://registry.npmjs.org/ && \
+    npm config set fetch-retry-mintimeout 20000 && \
+    npm config set fetch-retry-maxtimeout 120000 && \
+    npm config set fetch-retries 3 && \
+    npm ci --only=production && npm cache clean --force
 
 # Copy built application
 COPY --from=builder /app/dist ./dist
