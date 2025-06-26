@@ -22,22 +22,22 @@ openssl x509 -in ./ssl/server.crt -noout -subject -dates
 # Test HTTP redirect (if running)
 echo ""
 echo "🌐 Testing HTTP redirect to HTTPS..."
-curl -I -s -k http://localhost/api || echo "⚠️  Service not running"
+curl -I -s -k http://localhost:8081/hellovps || echo "⚠️  Service not running"
 
 # Test HTTPS endpoint (if running)
 echo ""
 echo "🔒 Testing HTTPS API endpoint..."
-curl -I -s -k https://localhost/api || echo "⚠️  Service not running"
+curl -I -s -k https://localhost:8444/hellovps/api || echo "⚠️  Service not running"
 
 # Test specific API endpoints
 echo ""
 echo "🧪 Testing API endpoints..."
 echo "1. Health check:"
-curl -s -k https://localhost/api || echo "⚠️  API not responding"
+curl -s -k https://localhost:8444/hellovps/api || echo "⚠️  API not responding"
 
 echo ""
 echo "2. Auth endpoint:"
-curl -I -s -k https://localhost/api/auth/profile || echo "⚠️  Auth endpoint not responding"
+curl -I -s -k https://localhost:8444/hellovps/api/auth/profile || echo "⚠️  Auth endpoint not responding"
 
 echo ""
 echo "3. CORS preflight:"
@@ -45,7 +45,7 @@ curl -I -s -k -X OPTIONS \
   -H "Origin: http://localhost:3001" \
   -H "Access-Control-Request-Method: GET" \
   -H "Access-Control-Request-Headers: Authorization" \
-  https://localhost/api || echo "⚠️  CORS preflight failed"
+  https://localhost:8444/hellovps/api || echo "⚠️  CORS preflight failed"
 
 echo ""
 echo "🎯 If services are running, you should see:"
@@ -54,3 +54,7 @@ echo "   - HTTPS 200/404 responses"
 echo "   - CORS headers in responses"
 echo ""
 echo "💡 To start services: npm run docker:prod"
+echo "🌐 Access URLs:"
+echo "   - HTTP: http://localhost:8081/hellovps"
+echo "   - HTTPS: https://localhost:8444/hellovps"
+echo "   - API Docs: https://localhost:8444/hellovps/api"

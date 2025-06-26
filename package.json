@@ -24,7 +24,7 @@
     "ssl:generate": "bash generate-ssl.sh",
     "ssl:test": "bash test-https.sh",
     "cors:test": "bash test-cors.sh",
-    "https:check": "curl -I -s -k https://localhost/api || echo 'Service not running'",
+    "https:check": "curl -I -s -k https://localhost:8444/hellovps/api || echo 'Service not running'",
     "lint": "echo 'Linting disabled for faster development'",
     "test": "echo 'Tests disabled for faster deployment'",
     "test:watch": "echo 'Tests disabled'",

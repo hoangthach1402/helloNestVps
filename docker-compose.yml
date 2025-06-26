@@ -10,7 +10,7 @@ services:
       POSTGRES_PASSWORD: nestpass
       POSTGRES_DB: nestdb
     ports:
-      - "5432:5432"
+      - "5434:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -37,9 +37,9 @@ services:
       - CLOUDINARY_API_KEY=725368927496298
       - CLOUDINARY_API_SECRET=wIwx-h_7EUYpVfTauBWw_p8YiiQ
       - GEMINI_API_KEY=AIzaSyAKrNgmZqifpUiaDdBTNTMZY1khuXIBhh8
-    # Không expose port 3000 ra ngoài, chỉ nginx access
-    expose:
-      - "3000"
+    # Expose qua ports khác để tránh conflict
+    ports:
+      - "3002:3000"
     depends_on:
       db:
         condition: service_healthy
@@ -57,8 +57,8 @@ services:
     image: nginx:alpine
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"
+      - "8081:80"   # HTTP
+      - "8444:443"  # HTTPS
     volumes:
       - ./nginx-vps.conf:/etc/nginx/conf.d/default.conf:ro
       - ./ssl:/etc/nginx/ssl:ro  # Mount SSL certificates
