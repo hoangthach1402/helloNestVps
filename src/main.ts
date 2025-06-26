@@ -7,6 +7,19 @@ import { RolesService } from './roles/roles.service';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   
+  // Enable CORS - cho phép tất cả domain truy cập (chỉ dùng cho dev)
+  app.enableCors({
+    origin: '*', // Cho phép tất cả domain - CHỈ DÙNG CHO DEV
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+    allowedHeaders: 'Content-Type, Accept, Authorization, X-Requested-With, Origin',
+    preflightContinue: false,
+    optionsSuccessStatus: 204
+  });
+  
+  // Set global prefix for all APIs
+  app.setGlobalPrefix('api');
+  
   // Configure body parser for file uploads
   app.use('/upload', (req, res, next) => {
     console.log('📥 Upload request received:', {
