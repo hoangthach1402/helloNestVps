@@ -52,14 +52,15 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('docs', app, document);
   
   // Initialize default roles
   const rolesService = app.get(RolesService);
   await rolesService.initializeDefaultRoles();
     await app.listen(process.env.PORT ?? 3000);
   console.log('🚀 Application is running on: http://localhost:3000');
-  console.log('📚 Swagger documentation: http://localhost:3000/api');
+  console.log('📚 Swagger documentation: http://localhost:3000/docs');
+  console.log('🔗 API Base URL: http://localhost:3000/api');
 }
 
 void bootstrap();
